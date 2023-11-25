@@ -5,8 +5,8 @@
 import os
 
 
-#initialize 
-board = [' ' for x in range(10)]
+#initialize
+board = [' ' for _ in range(10)]
 FirstRun = True
 
 
@@ -22,22 +22,19 @@ def spaceIsFree(pos):
 
 def printBoard(board):
     print('   |   |   ')
-    print(' ' + board[1] + ' | ' + board[2] + ' | ' + board[3])
+    print(f' {board[1]} | {board[2]} | {board[3]}')
     print('   |   |   ')
     print('------------')
     print('   |   |   ')
-    print(' ' + board[4] + ' | ' + board[5] + ' | ' + board[6])
+    print(f' {board[4]} | {board[5]} | {board[6]}')
     print('   |   |   ')
     print('------------')
     print('   |   |   ')
-    print(' ' + board[7] + ' | ' + board[8] + ' | ' + board[9])
+    print(f' {board[7]} | {board[8]} | {board[9]}')
     print('   |   |   ')
 
 def isBoardFull(board):
-    if board.count(' ') >= 2:
-        return False
-    else:
-        return True
+    return board.count(' ') < 2
 
 def IsWinner(b,l):
     return(
@@ -78,30 +75,13 @@ def computerMove():
             boardcopy = board[:]
             boardcopy[i] = let
             if IsWinner(boardcopy, let):
-                move = i
-                return move
-
-    cornersOpen = []
-    for i in possibleMoves:
-        if i in [1, 3, 7, 9]:
-            cornersOpen.append(i)
-
-    if len(cornersOpen) > 0:
-        move = selectRandom(cornersOpen)
-        return move
-
+                return i
+    if cornersOpen := [i for i in possibleMoves if i in [1, 3, 7, 9]]:
+        return selectRandom(cornersOpen)
     if 5 in possibleMoves:
-        move = 5
-        return move
-
-    edgesOpen = []
-    for i in possibleMoves:
-        if i in [2, 4, 6, 8]:
-            edgesOpen.append(i)
-
-    if len(edgesOpen) > 0:
-        move = selectRandom(edgesOpen)
-        return move
+        return 5
+    if edgesOpen := [i for i in possibleMoves if i in [2, 4, 6, 8]]:
+        return selectRandom(edgesOpen)
 
 def selectRandom(li):
     import random
@@ -111,7 +91,7 @@ def selectRandom(li):
 
 def StartTheGame():
     global board
-    board = [' ' for x in range(10)]
+    board = [' ' for _ in range(10)]
     CleanScreen()
     print('-------------------')
     GamePlay()
@@ -130,10 +110,11 @@ def CleanScreen():
 #check Tie Game condition
 def TieGame():
     
-    if isBoardFull(board) and (not((IsWinner(board, 'X')) or (IsWinner(board, 'O')))):
-        return True
-    else:
-        return False
+    return bool(
+        isBoardFull(board)
+        and not (IsWinner(board, 'X'))
+        and not (IsWinner(board, 'O'))
+    )
 
 
 #gameplay design here
@@ -170,13 +151,13 @@ while True:
         FirstRun=False
         StartTheGame()
 
-    else :
+    else:
         if TieGame():
             print("Tie Game")
         x = input("Do you want to play again? (y/n)")
-        if x.lower() == 'y' or x.lower() =='yes':
+        if x.lower() in ['y', 'yes']:
             StartTheGame()
-        
+
         else:
             print("GLHF")
             break
